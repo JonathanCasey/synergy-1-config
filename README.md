@@ -31,98 +31,88 @@ sounds like a winning solution, right?
 
 Turns out, Windows hates you and your stupid batch files.  This is not the way.
 
-One way will be to use `Task Scheduler`, being sure to select hidden and
-possibly [set to run as SYSTEM](https://stackoverflow.com/a/6568823), but that
-should require more research to minimize escalation.
 
-The way covered here requires installation of the
-[Non-Sucking Service Manager (nssm)](https://nssm.cc/).
+Option 2 is [Non-Sucking Service Manager (nssm)](https://nssm.cc/), but this has
+its own challenges.  Windows seems to require this being run as the logged in
+user -- running it in the background results in it being unable to get the
+screen size/shape and consequently unable to leave the screen.  There are some
+tricks to use, but since this also does not produce a tray icon even when done
+as the logged in user with password saved, this is a no-go.
+
+
+The way covered here will be to use `Task Scheduler`.  Still not ideal, but best
+option right now.
 
 
 ##### Installing and Starting
-Ensure [`nssm`](https://nssm.cc/download) is downloaded and its directory has
-been added to the path.
+Run `Task Scheduler` from Windows search.  On the right, click "Create Task...".
+Note, to edit in the future, click "Task Scheduler Library" on the left and find
+the task in the list.
 
-To install or edit a service with the GUI, use:
-```
-nssm install []<servicename>]
-# Or to edit existing:
-nssm edit <servicename>
-```
+The recommended settings to change:
+1. On `General`, set `Name` to something like `Synergy Server`.
+2. On `General`, set `Description` to something like "Wrapper for running
+      Synergy Server on all relevant interfaces."
+3. On `General`, leave `Run only when user is logged on` selected.
+  1. You may be tempted to change this, but changing this with or without
+        storing the password, or changing the user to anything including
+        `SYSTEM` fails.  It will run and connect, but the screen will be wrong
+        and no tray icon, so there's no actual operation on another screen.
+4. On `General`, check `Run with highest privileges` to avoid having issues such
+      as not being able to click on system apps on clients.
+5. On `General`, check `Hidden`.  Not sure if it helps, but did it.
+6. On `General`, select `Configure for:` to be `Windows 10` just in case.
+7. On `Triggers`, select `New...`:
+  1. Select `Begin the task:` to be `At startup`.
+  2. Check `Repeat task every:`.
+  3. After checking `Repeat task every:`, set the dropdown to `1 minute` (write
+        in).
+  4. Also set `for a duration of:` to `Indefinitely`.
+  5. Make more triggers and repeat all steps for `Begin the task:` being
+        `At log on`, `On workstation unlock`, and `At task
+        creation/modification`.
+8. On `Actions`, select `New...`:
+  1. For the `Program/script`, enter the appropriate full script path (e.g.
+        `C:\path\to\synergy-1-config\synergys_sb2_mgmt.bat`).
+  2. For the `Start in (optional)`, enter the path to the repo root (e.g.
+        `C:\path\to\synergy-1-config`).
+9. On `Conditions`, uncheck `Start the task only if the computer is on AC power`
+      if desired.
+10. On `Conditions`, check `Start only if the following network connection is
+      available` and select from the dropdown if desired.
+11. On `Settings`, check `Run task as soon as possible after a scheduled start
+      is missed`.
+12. On `Settings`, uncheck `Stop the task if it runs longer than:`.
 
-To install and setup entirely via CLI (example shows server on SB2 machine, but
-could be adapted to client and/or other machines as noted), open a command
-prompt run as adminstrator:
-```
-# For client, replace "server" with "client" below
-# Also replace *mgmt.bat as desired for server/client and which machine
-nssm install synergy-server "C:\path\to\synergy-1-config\synergys_sb2_mgmt.bat"
-nssm set synergy-server AppDirectory "C:\path\to\synergy-1-config"
-nssm set synergy-server DisplayName "Synergy Server"
-nssm set synergy-server Description "Wrapper for running Synergy Server on all relevant interfaces."
-nssm set synergy-server Start SERVICE_AUTO_START
-nssm set synergy-server AppThrottle 1500
-nssm set synergy-server AppExit Default Restart
-nssm set synergy-server AppRestartDelay 0
+If the task is stopped and run manually, it does not seem to trigger the
+auto-restart mechanism, so best way it to click properties and hit ok to hit the
+"modify" trigger (even though nothing was changed).
 
-nssm set synergy-server Type SERVICE_INTERACTIVE_PROCESS
+This can be repeated for the client, using the appropriate client management
+script such as `C:\path\to\synergy-1-config\synergyc_office-tvpc-ir_mgmt.bat`,
+an appropriate name like `Synergy Client`, and a better description like
+"Wrapper for running Synergy Client to try all potential servers."
 
-
-
-```
-
-
-
-
-
-
-
-The relevant batch file can be installed as a service using the
-[sc create](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/sc-create)
-command.
-
-Run a command prompt as administrator:
-```
-# Example of installing server on SB2:
-sc create synergy-server start= auto binpath= "C:\path\to\synergy-1-config\synergys_sb2_mgmt.bat" displayname= "Synergy Server"
-
-# Or, example of installing client on OL:
-sc create synergy-client start= auto binpath= "C:\path\to\synergy-1-config\synergyc_office-tvpc-ir_mgmt.bat" displayname= "Synergy Client"
-```
-
-Afterwards, open the `Services` app from Windows search and find the new synergy
-service in the list.  Right-click and select `Properties`.  On the `Recovery`
-tab, for each of the "failure" options, select "Restart the Service" from the
-list.  The "Restart service after" should default to "1 minutes".  This can be
-left as-is or possibly changed to 0 in order to restart immediately, but it may
-be best to add some delay in the batch file in that case to avoid running too
-much.
-
-Finally, on the `General` tab, kick this off by clicking the `Start` button,
-then `OK` below to apply all changes.
+Note that this does open a command prompt and leave it open.  Not much can be
+done with this at this time.  Best option may be to throw it on an empty desktop
+when using multiple desktops.  Out of sight, out of mind, right?
 
 
 ##### Stopping and Uninstalling
-The service can be stopped anytime by opening the `Services` app from Windows
-search and finding the synergy service in the list.  Right-click and select
-`Stop` (or any other desired option).
+This can be stopped to varying degrees.
 
-To fully uninstall, the
-[sc delete](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/sc-delete)
-is used.
+The command prompt window can be closed to stop.  The task will likely reopen it
+within a minute.
 
-Run a command prompt as administrator:
-```
-# Example of uninstalling server:
-sc delete synergy-server
+In Task Scheduler, right clicking the task and selecting `End` will also stop,
+but again it is likely to be restarted within a minute.
 
-# Or, example of uninstalling client:
-sc delete synergy-client
-```
+In Task Scheduler, right clicking the task and selecting `Disable` will stop it
+from restarting.  Note, to restart, will want to use the "modify" trick
+mentioned above.
 
-If a different service name was used, it can be found in the `Services` app,
-finding the service, right-clicking and selecting `Properties`, and noting the
-`Service name` at the top of the `General` tab.
+Finally, to fully uninstall, simply delete the task from Task Scheduler by
+right clicking on the task and selecting `Delete`.
 
 
 ##### Alternative restart mechanism
