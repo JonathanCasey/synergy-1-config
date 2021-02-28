@@ -1,3 +1,3 @@
 @echo off
 
-synergyc_mgmt.bat Office-TVPC-OL
+synergyc_mgmt.bat Office_TVPC_OL
