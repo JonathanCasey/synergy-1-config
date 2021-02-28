@@ -88,7 +88,9 @@ The recommended settings to change:
 
 If the task is stopped and run manually, it does not seem to trigger the
 auto-restart mechanism, so best way it to click properties and hit ok to hit the
-"modify" trigger (even though nothing was changed).
+"modify" trigger (even though nothing was changed).  In fact, it may be best to
+disable the option to run manually by editing the task in Task Scheduler, going
+to the `Settings` tab, and unchecking `Allow task to be run on demand`.
 
 This can be repeated for the client, using the appropriate client management
 script such as `C:\path\to\synergy-1-config\synergyc_office-tvpc-ir_mgmt.bat`,
