@@ -20,8 +20,63 @@ synergys_sb2_mgmt.bat
 The real way to use this is as a service.  This is very dependent on the OS.
 
 ### Windows 10
+The `Services` app and using an administrator command prompt to issue things
+like `sc create synergy-server start= auto
+binpath= "C:\path\to\synergy-1-config\synergys_sb2_mgmt.bat"
+displayname= "Synergy Server"` and `sc delete synergy-server` using
+[sc create](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/sc-create)
+and
+[sc delete](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/sc-delete)
+sounds like a winning solution, right?
+
+Turns out, Windows hates you and your stupid batch files.  This is not the way.
+
+One way will be to use `Task Scheduler`, being sure to select hidden and
+possibly [set to run as SYSTEM](https://stackoverflow.com/a/6568823), but that
+should require more research to minimize escalation.
+
+The way covered here requires installation of the
+[Non-Sucking Service Manager (nssm)](https://nssm.cc/).
+
 
 ##### Installing and Starting
+Ensure [`nssm`](https://nssm.cc/download) is downloaded and its directory has
+been added to the path.
+
+To install or edit a service with the GUI, use:
+```
+nssm install []<servicename>]
+# Or to edit existing:
+nssm edit <servicename>
+```
+
+To install and setup entirely via CLI (example shows server on SB2 machine, but
+could be adapted to client and/or other machines as noted), open a command
+prompt run as adminstrator:
+```
+# For client, replace "server" with "client" below
+# Also replace *mgmt.bat as desired for server/client and which machine
+nssm install synergy-server "C:\path\to\synergy-1-config\synergys_sb2_mgmt.bat"
+nssm set synergy-server AppDirectory "C:\path\to\synergy-1-config"
+nssm set synergy-server DisplayName "Synergy Server"
+nssm set synergy-server Description "Wrapper for running Synergy Server on all relevant interfaces."
+nssm set synergy-server Start SERVICE_AUTO_START
+nssm set synergy-server AppThrottle 1500
+nssm set synergy-server AppExit Default Restart
+nssm set synergy-server AppRestartDelay 0
+
+nssm set synergy-server Type SERVICE_INTERACTIVE_PROCESS
+
+
+
+```
+
+
+
+
+
+
+
 The relevant batch file can be installed as a service using the
 [sc create](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/sc-create)
 command.
