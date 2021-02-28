@@ -72,9 +72,11 @@ The recommended settings to change:
         `At log on`, `On workstation unlock`, and `At task
         creation/modification`.
 8. On `Actions`, select `New...`:
-  1. For the `Program/script`, enter the appropriate full script path (e.g.
-        `C:\path\to\synergy-1-config\synergys_sb2_mgmt.bat`).
-  2. For the `Start in (optional)`, enter the path to the repo root (e.g.
+  1. For the `Program/script`, enter `cmd.exe`.
+  2. For the `Add arguments (optional):`, enter `/c ` followed by the
+        appropriate full script path (e.g. full arg would be
+       `/c "C:\path\to\synergy-1-config\synergys_sb2_mgmt.bat"`).
+  3. For the `Start in (optional)`, enter the path to the repo root (e.g.
         `C:\path\to\synergy-1-config`).
 9. On `Conditions`, uncheck `Start the task only if the computer is on AC power`
       if desired.
@@ -96,6 +98,15 @@ an appropriate name like `Synergy Client`, and a better description like
 Note that this does open a command prompt and leave it open.  Not much can be
 done with this at this time.  Best option may be to throw it on an empty desktop
 when using multiple desktops.  Out of sight, out of mind, right?
+
+The last trick is, to have this automatically run upon wake/boot, auto-sign in
+for the user will be needed since these tasks only run when logged in.  This is
+likely not an option everywhere for security reasons, but in case it is,
+[this site](http://woshub.com/how-to-disable-password-login-in-windows-10/)
+(who somehow has not figured out https in 2021 -_-) has good resources.  The
+gpedit option to not require a password when a computer wakes in "Computer
+Configuration -> Administrative Templates -> System -> Power Management -> Sleep
+Settings" worked wonderfully.
 
 
 ##### Stopping and Uninstalling
@@ -140,3 +151,16 @@ require using something like systemd.
 
 ### Mac OS X
 Install Linux or buy a PC.  Just kidding...coming later, but probably never.
+
+
+
+## Other Uses
+
+### Bi-directional
+There is nothing that stops a machine from being a server and a client at the
+same time.
+
+From limited experience, it seems this only partially works well.  Some
+weirdness pops up when changing screens, things can jump around and be weird in
+general.  This was not thoroughly tested, so it cannot be conclusively ruled
+out, but neither is a simple/obvious solution readily available.
