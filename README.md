@@ -54,7 +54,7 @@ The recommended settings to change:
 2. On `General`, set `Description` to something like "Wrapper for running
       Synergy Server on all relevant interfaces."
 3. On `General`, leave `Run only when user is logged on` selected.
-  1. You may be tempted to change this, but changing this with or without
+    1. You may be tempted to change this, but changing this with or without
         storing the password, or changing the user to anything including
         `SYSTEM` fails.  It will run and connect, but the screen will be wrong
         and no tray icon, so there's no actual operation on another screen.
@@ -63,20 +63,20 @@ The recommended settings to change:
 5. On `General`, check `Hidden`.  Not sure if it helps, but did it.
 6. On `General`, select `Configure for:` to be `Windows 10` just in case.
 7. On `Triggers`, select `New...`:
-  1. Select `Begin the task:` to be `At startup`.
-  2. Check `Repeat task every:`.
-  3. After checking `Repeat task every:`, set the dropdown to `1 minute` (write
+    1. Select `Begin the task:` to be `At startup`.
+    2. Check `Repeat task every:`.
+    3. After checking `Repeat task every:`, set the dropdown to `1 minute` (write
         in).
-  4. Also set `for a duration of:` to `Indefinitely`.
-  5. Make more triggers and repeat all steps for `Begin the task:` being
+    4. Also set `for a duration of:` to `Indefinitely`.
+    5. Make more triggers and repeat all steps for `Begin the task:` being
         `At log on`, `On workstation unlock`, and `At task
         creation/modification`.
 8. On `Actions`, select `New...`:
-  1. For the `Program/script`, enter `cmd.exe`.
-  2. For the `Add arguments (optional):`, enter `/c ` followed by the
+    1. For the `Program/script`, enter `cmd.exe`.
+    2. For the `Add arguments (optional):`, enter `/c ` followed by the
         appropriate full script path (e.g. full arg would be
        `/c "C:\path\to\synergy-1-config\synergys_sb2_mgmt.bat"`).
-  3. For the `Start in (optional)`, enter the path to the repo root (e.g.
+    3. For the `Start in (optional)`, enter the path to the repo root (e.g.
         `C:\path\to\synergy-1-config`).
 9. On `Conditions`, uncheck `Start the task only if the computer is on AC power`
       if desired.
