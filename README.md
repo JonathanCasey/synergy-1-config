@@ -128,23 +128,6 @@ Finally, to fully uninstall, simply delete the task from Task Scheduler by
 right clicking on the task and selecting `Delete`.
 
 
-##### Alternative restart mechanism
-If a restart time of 30 seconds, for example, is desired; or if want to do the
-restart looping in the batch file, it can be altered using something like the
-following:
-```
-:Start
-synergys <options>
-:: All the other calls
-TIMEOUT /T 30
-GOTO:Start
-```
-
-This will give a 30 seconds at the end before starting the loop of all
-server/client options in the batch file all over again.  This never ends, so the
-batch file would need to be terminated with Ctrl-C if running manually or stop
-the service if running as such.
-
 
 ### Linux (Ubuntu)
 In addition to adapting the batch files to work as shell scripts, this will also
