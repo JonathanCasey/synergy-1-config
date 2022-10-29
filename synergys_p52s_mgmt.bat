@@ -4,7 +4,7 @@
 
 :Start
 
-Rem s0. Try connecting to SB2 if it is already up
+Rem s0. Try connecting to SB2/SnowGlow if it is already up
 call synergyc_mgmt.bat VS-P52S
 
 Rem s1. Try hosting on VS-P52S wired

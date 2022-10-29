@@ -4,7 +4,7 @@
 
 :Start
 
-Rem s0. Try connecting to P52S if it is already up
+Rem s0. Try connecting to P52S/SnowGlow if it is already up
 call synergyc_mgmt.bat JC-SB2
 
 Rem s1. Try hosting on JC-SB2 wired

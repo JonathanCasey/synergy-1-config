@@ -13,6 +13,7 @@ synergyc_office-tvpc-ir_mgmt.bat
 synergyc_office-tvpc-ol_mgmt.bat
 synergys_p52s_mgmt.bat
 synergys_sb2_mgmt.bat
+synergys_snow-glow_mgmt.bat
 ```
 
 
